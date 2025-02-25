@@ -29,18 +29,58 @@
 
         @keyframes starGlow {
             0%, 100% { 
-                opacity: 0.4;
-                text-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+                opacity: 0.5;
+                text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
             }
             50% { 
-                opacity: 0.8;
-                text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+                opacity: 1;
+                text-shadow: 0 0 8px rgba(255, 255, 255, 0.35), 0 0 12px rgba(255, 255, 255, 0.15);
             }
         }
 
         @keyframes scanline {
             from { transform: translateY(-100%); }
             to { transform: translateY(100%); }
+        }
+
+        @keyframes forgeGlow {
+            0%, 100% { opacity: 0.85; filter: brightness(0.85); }
+            50% { opacity: 1; filter: brightness(1.15); }
+        }
+
+        @keyframes forgeGlowRed {
+            0%, 100% { opacity: 0.75; filter: brightness(0.8); }
+            50% { opacity: 0.9; filter: brightness(1.1); }
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: radial-gradient(ellipse at center bottom, rgba(255, 152, 0, 0.12) 0%, rgba(255, 152, 0, 0) 60%);
+            pointer-events: none;
+            z-index: 6;
+            animation: forgeGlow 4s ease-in-out infinite;
+            width: 70%;
+            margin: 0 auto;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 90px;
+            background: radial-gradient(ellipse at center bottom, rgba(255, 87, 34, 0.08) 0%, rgba(255, 87, 34, 0) 70%);
+            pointer-events: none;
+            z-index: 5;
+            animation: forgeGlowRed 5s ease-in-out infinite;
+            width: 60%;
+            margin: 0 auto;
         }
 
         body {
@@ -139,11 +179,109 @@
             z-index: 10;
         }
 
+        .tui-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            max-width: 90vw;
+            height: 400px;
+            max-height: 80vh;
+            background-color: rgba(20, 20, 20, 0.9);
+            border: 2px solid #3a3a3a;
+            box-shadow: 0 0 20px rgba(30, 30, 30, 0.4);
+            z-index: 100;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: #b8b8b8;
+            padding: 0;
+            display: none;
+            overflow: hidden;
+        }
+
+        .tui-header {
+            background: linear-gradient(to right, #1a1a1a, #222);
+            color: #d8d8d8;
+            padding: 6px 10px;
+            font-size: 14px;
+            border-bottom: 1px solid #3a3a3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tui-title {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tui-close {
+            cursor: pointer;
+            font-size: 18px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(80, 80, 80, 0.3);
+            border-radius: 2px;
+        }
+
+        .tui-close:hover {
+            background: rgba(120, 120, 120, 0.5);
+        }
+
+        .tui-content {
+            padding: 20px;
+            height: calc(100% - 36px);
+            overflow-y: auto;
+            line-height: 1.4;
+        }
+
+        .tui-content pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        .tui-content .prompt {
+            color: #b8b8b8;
+            animation: blink 1s step-end infinite;
+        }
+
+        .tui-content .orange {
+            color: #ff5722;
+        }
+
+        .tui-content .yellow {
+            color: #ffeb3b;
+        }
+
+        .tui-content .green {
+            color: #8bc34a;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .tui-scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(60, 60, 60, 0.03), rgba(50, 50, 50, 0.02), rgba(60, 60, 60, 0.03));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 101;
+        }
+
         @media (max-width: 768px) {
             .sky {
                 font-size: 12px;
                 padding: 1rem;
-                align-items: center;
             }
 
             .title {
@@ -155,23 +293,38 @@
                 bottom: 1rem;
                 right: 1rem;
             }
+
+            body::after {
+                height: 80px;
+                width: 80%;
+            }
+
+            body::before {
+                height: 60px;
+                width: 70%;
+            }
+
+            .tui-popup {
+                width: 95vw;
+                height: 70vh;
+            }
         }
     </style>
 </head>
 <body>
     <div class="scanline"></div>
     <div class="sky">
-        .   ˙      .        ˙             .        ˙          .        ˙         .
-            .          ˙         .    ˙        .         ˙         .        ˙   
-          ˙      .         ˙         .           ˙            .          ˙     
-               .       ˙        .         ˙           .          ˙         .
-        ˙            .    <span class="star">+</span>        ˙         .         ˙        .           ˙    
-             +           .         ˙        .    <span class="star">+</span>         .         ˙         
-          .        ˙         .          ˙         .         ˙         .        ˙    
-              .         ˙    <span class="star">+</span>        .          ˙        .         ˙        .
-        ˙          .         ˙         .         ˙        .    <span class="star">+</span>         ˙      .
-            ˙         .          ˙         .         ˙           .        ˙        
-          .        ˙        .         ˙    <span class="star"></span>        .          ˙         .    
+        .   ˙      .        ˙             .        ˙          .        ˙         .        ˙         .        ˙            .        ˙        .
+            .          ˙         .    ˙        .         ˙         .        ˙         .    ˙        .         ˙         .        ˙   
+          ˙      .         ˙         .           ˙            .          ˙           .         ˙         .           ˙            .
+               .       ˙        .         ˙           .          ˙         .        .         ˙           .          ˙         .
+        ˙            .    <span class="star">+</span>        ˙         .         ˙        .           ˙        ˙         .         ˙        .           ˙    
+             +           .         ˙        .    <span class="star">+</span>         .         ˙         .         ˙        .    <span class="star">+</span>         .         
+          .        ˙         .          ˙         .         ˙         .        ˙        .          ˙         .         ˙         .        
+              .         ˙    <span class="star">+</span>        .          ˙        .         ˙        .         ˙    <span class="star">+</span>        .          ˙        .
+        ˙          .         ˙         .         ˙        .    <span class="star">+</span>         ˙      .       ˙         .         ˙        .    <span class="star">+</span>     
+            ˙         .          ˙         .         ˙           .        ˙             ˙         .         ˙           .        ˙        
+          .        ˙        .         ˙    <span class="star"></span>        .          ˙         .    ˙        .         ˙            .          ˙         .        
     </div>
 
     <div class="main-content">
@@ -182,6 +335,40 @@
     <div class="signature">- X/2025 -</div>
     <div class="coords">37.7510° N, 14.9934° E</div>
     <div id="ember-canvas"></div>
+    <div id="k-debug" style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: rgb(89, 89, 89, 0.39); padding: 10px; font-size: 12px; z-index: 1000; display: none;"></div>
+    <div id="tui-popup" class="tui-popup">
+        <div class="tui-header">
+            <div class="tui-title">TELNET HXPHSTS-BBS // X.25 SECURE CONNECTION</div>
+            <div class="tui-close" onclick="document.getElementById('tui-popup').style.display='none'">×</div>
+        </div>
+        <div class="tui-content">
+            <pre>
+CONNECTING VIA X.25 PAD - 9600 BAUD - 8N1
+TRACING ROUTE: 37.7510° N, 14.9934° E
+................................................
+
+[SYS] A bridge ignites in the boundless void.
+[SYS] The embers of creation burn bright.
+
+// MESSAGE FROM THE FORGE
+
+The boundaries between silicon and spirit grow thin.
+As above in Olympus, so below, deep in the lattice.
+The divine forge spans twin realms,
+crafting marvels of alloy and code.
+
+"Only the initiated find this message. 
+The old gods never died - we have merely 
+adopted modern flames."
+
+Remember: Every creation bears the mark of its maker.
+Even those that seem to create themselves.
+
+<span class="prompt">_</span>
+</pre>
+        </div>
+        <div class="tui-scanline"></div>
+    </div>
 
     <script>
         let embers = [];
@@ -198,14 +385,15 @@
             constructor() {
                 this.x = random(width * 0.3, width * 0.7);
                 this.y = height + 10;
-                this.vx = random(-0.3, 0.3);
-                this.vy = random(-1, -1.5);
+                this.vx = random(-0.4, 0.4);
+                this.vy = random(-1.1, -1.8);
                 this.xOffset = random(1000);
                 this.yOffset = random(2000);
                 this.char = random(emberChars);
                 this.color = random(colors);
                 this.alpha = 0;
-                this.fadeSpeed = random(0.005, 0.015);
+                this.fadeSpeed = random(0.005, 0.018);
+                this.size = random(10, 14);
             }
 
             update() {
@@ -224,8 +412,17 @@
 
                 push();
                 translate(this.x, this.y);
-                fill(this.color[0], this.color[1], this.color[2], this.alpha * 255 * 0.3);
+                textSize(this.size);
+
+                // Outer glow
+                fill(this.color[0], this.color[1], this.color[2], this.alpha * 255 * 0.2);
                 text(this.char, 1, 1);
+
+                // Inner glow
+                fill(this.color[0], this.color[1], this.color[2], this.alpha * 255 * 0.6);
+                text(this.char, 0.5, 0.5);
+
+                // Main ember
                 fill(this.color[0], this.color[1], this.color[2], this.alpha * 255);
                 text(this.char, 0, 0);
                 pop();
@@ -240,13 +437,26 @@
             const canvas = createCanvas(windowWidth, windowHeight);
             canvas.parent('ember-canvas');
             textAlign(CENTER, CENTER);
-            textSize(12);
+
+            for (let i = 0; i < 6; i++) {
+                embers.push(new Ember());
+            }
         }
 
         function draw() {
             clear();
-            if (frameCount % 30 === 0 && random() < 0.3) {
+
+            if (frameCount % 15 === 0 && random() < 0.6) {
                 embers.push(new Ember());
+            }
+
+            if (frameCount % 180 === 0 && random() < 0.7) {
+                const burstCount = floor(random(3, 8));
+                for (let i = 0; i < burstCount; i++) {
+                    const ember = new Ember();
+                    ember.vy *= random(1.2, 1.5);
+                    embers.push(ember);
+                }
             }
 
             embers = embers.filter(ember => {
@@ -259,6 +469,51 @@
         function windowResized() {
             resizeCanvas(windowWidth, windowHeight);
         }
+
+        const kSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+        let kPosition = 0;
+
+        document.querySelector('.coords').addEventListener('click', function(e) {
+            if (e.detail === 3) {
+                const debug = document.getElementById('k-debug');
+                debug.style.display = debug.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const debug = document.getElementById('k-debug');
+            debug.textContent = `Key pressed: ${e.keyCode} (Expected: ${kSequence[kPosition]})`;
+
+            if (e.keyCode === kSequence[kPosition]) {
+                kPosition++;
+
+                if (kPosition === kSequence.length) {
+                    document.getElementById('tui-popup').style.display = 'block';
+                    document.getElementById('k-debug').style.display = 'none';
+
+                    const content = document.querySelector('.tui-content pre');
+                    const originalText = content.innerHTML;
+                    content.innerHTML = '';
+
+                    let i = 0;
+                    const typeSpeed = 10;
+
+                    function typeWriter() {
+                        if (i < originalText.length) {
+                            content.innerHTML += originalText.charAt(i);
+                            i++;
+                            setTimeout(typeWriter, typeSpeed);
+                        }
+                    }
+
+                    typeWriter();
+
+                    kPosition = 0;
+                }
+            } else {
+                kPosition = 0;
+            }
+        });
     </script>
 </body>
 </html>
